@@ -311,5 +311,4 @@ class Kohana_Minion_CLI {
 
 		return $string;
 	}
-
 }
