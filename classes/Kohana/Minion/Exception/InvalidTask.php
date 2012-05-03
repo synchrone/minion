@@ -14,5 +14,4 @@ class Kohana_Minion_Exception_InvalidTask extends Minion_Exception {
 	{
 		return 'ERROR: '. $this->getMessage().PHP_EOL;
 	}
-
 }
