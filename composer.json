@@ -1,0 +1,12 @@
+{
+	"name": "widerplan/minion",
+	"description": "Wider Plan Kohana 3 Minion Fork.",
+	"homepage": "https://github.com/kiddivouchers/minion",
+	"license": "Proprietary",
+	"authors": [
+		{
+			"name": "Wider Plan",
+			"email": "development@widerplan.com"
+		}
+	]
+}
