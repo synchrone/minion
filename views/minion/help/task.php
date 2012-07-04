@@ -14,4 +14,9 @@ Description
 ===========
 <?php echo $description; ?>
 
+<?php if($help){ ?>
+Help
+====
+<?php echo $help; ?>
 
+<?php } ?>

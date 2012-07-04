@@ -267,6 +267,7 @@ abstract class Kohana_Minion_Task {
 		list($description, $tags) = $this->_parse_doccomment($inspector->getDocComment());
 
 		$view = View::factory('minion/help/task')
+            ->set('help',$this->_get_kodoc_help())
 			->set('description', $description)
 			->set('tags', (array) $tags)
 			->set('task', Minion_Task::convert_class_to_task($this));
@@ -361,4 +362,36 @@ abstract class Kohana_Minion_Task {
 
 		return $output;
 	}
+
+    protected function _get_kodoc_help()
+    {
+        $location = $this->_get_task_help_location($this);
+
+        $manual_path = sprintf(
+            implode(DIRECTORY_SEPARATOR, array('guide','%s','task','%s')),
+            $location['module'], $location['path']
+        );
+
+        if ($manual = Kohana::find_file($manual_path,$location['filename'],'md'))
+        {
+            return file_get_contents($manual);
+        }
+        return null;
+    }
+
+    protected function _get_task_help_location($class)
+    {
+        if(is_object($class)){
+            $class = get_class($class);
+        }
+
+        $ref = new ReflectionClass($class);
+        $filename = substr($ref->getFileName(),strlen(MODPATH));
+
+        $module = substr($filename,0,strpos($filename,DIRECTORY_SEPARATOR)); //up to the first DS
+        $task_path = substr($filename,strlen($module.'/classes/task/'));
+        $pinfo = pathinfo($task_path);
+
+        return array('module'=>$module,'path'=>$pinfo['dirname'],'filename'=>$pinfo['filename']);
+    }
 }
