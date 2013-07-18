@@ -8,7 +8,10 @@
  * @copyright  (c) 2009-2011 Kohana Team
  * @license    http://kohanaframework.org/license
  */
-class Kohana_Minion_Exception extends Kohana_Exception {
+class Kohana_Minion_Exception extends Kohana_Kohana_Exception
+{
+    public static $error_view = 'kohana/cli_error';
+
 	/**
 	 * Inline exception handler, displays the error message, source of the
 	 * exception, and the stack trace of the error.
@@ -16,49 +19,21 @@ class Kohana_Minion_Exception extends Kohana_Exception {
 	 * Should this display a stack trace? It's useful.
 	 *
 	 * Should this still log? Maybe not as useful since we'll see the error on the screen.
-	 *
-	 * @uses    Kohana_Exception::text
 	 * @param   Exception   $e
-	 * @return  boolean
+	 * @return  Response
 	 */
-	public static function handler(Exception $e)
+	public static function response(Exception $e)
 	{
-		try
-		{
-			if ($e instanceof Minion_Exception)
-			{
-				echo $e->format_for_cli();
-			}
-			else
-			{
-				echo Kohana_Exception::text($e);
-			}
-			
-			$exit_code = $e->getCode();
-
-			// Never exit "0" after an exception.
-			if ($exit_code == 0)
-			{
-				$exit_code = 1;
-			}
-
-			exit($exit_code);
-		}
-		catch (Exception $e)
-		{
-			// Clean the output buffer if one exists
-			ob_get_level() and ob_clean();
-
-			// Display the exception text
-			echo Kohana_Exception::text($e), "\n";
-
-			// Exit with an error status
-			exit(1);
-		}
+        return PHP_SAPI=='cli' ? self::cli_response($e) : parent::response($e);
 	}
 
-	public function format_for_cli()
-	{
-		return Kohana_Exception::text($e);
-	}
+    protected static function cli_response($e){
+        $old_view = Kohana_Exception::$error_view;
+        Kohana_Exception::$error_view = self::$error_view;
+
+        $response = parent::response($e);
+
+        Kohana_Exception::$error_view = $old_view;
+        return $response;
+    }
 }
