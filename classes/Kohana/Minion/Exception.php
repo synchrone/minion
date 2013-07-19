@@ -10,7 +10,7 @@
  */
 class Kohana_Minion_Exception extends Kohana_Kohana_Exception
 {
-    public static $error_view = 'kohana/cli_error';
+    public static $cli_error_view = 'kohana/cli_error';
 
 	/**
 	 * Inline exception handler, displays the error message, source of the
@@ -29,7 +29,7 @@ class Kohana_Minion_Exception extends Kohana_Kohana_Exception
 
     protected static function cli_response($e){
         $old_view = Kohana_Exception::$error_view;
-        Kohana_Exception::$error_view = self::$error_view;
+        Kohana_Exception::$error_view = self::$cli_error_view;
 
         $response = parent::response($e);
 
